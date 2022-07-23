@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import pg from 'pg';
 import { Sequelize } from 'sequelize-typescript';
 import { ConfigService } from '@nestjs/config';
+import { Users, Transactions } from '../models';
 
 export const databaseProviders = [
   {
@@ -16,7 +17,7 @@ export const databaseProviders = [
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         dialectModule: pg,
-        logging: logger.debug,
+        logging: (data) => logger.verbose(data),
         pool: {
           max: 5,
           min: 0,
@@ -24,7 +25,7 @@ export const databaseProviders = [
           idle: 10000,
         },
       });
-      sequelize.addModels([]);
+      sequelize.addModels([Users, Transactions]);
       await sequelize.sync({ alter: true, force: false });
       await sequelize.authenticate();
       return sequelize;

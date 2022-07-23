@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TransactionModule } from './transaction/transaction.module';
+import { DatabaseModule } from './common/database/database.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { TransactionModule } from './transaction/transaction.module';
       isGlobal: true,
     }),
     TransactionModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
