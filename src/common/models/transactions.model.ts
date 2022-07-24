@@ -20,6 +20,9 @@ class Transactions extends Model {
 
   @Column({ type: INTEGER })
   amount: number;
+
+  @Column({ type: INTEGER })
+  points: number;
 }
 
 export default Transactions;
