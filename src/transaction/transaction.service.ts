@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transactions } from '../common/models/index';
+import { Transaction as TransactionEntity } from './entities/transaction.entity';
 
 @Injectable()
 export class TransactionService {
-  create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+  async create(
+    createTransactionDto: CreateTransactionDto,
+  ): Promise<Transactions> {
+    const createdTransaction = await Transactions.create({
+      ...createTransactionDto,
+    });
+    const _transaction = await createdTransaction.get({ plain: true });
+    return _transaction;
   }
 
-  findAll() {
-    return `This action returns all transaction`;
+  async findAll(): Promise<TransactionEntity[]> {
+    return await Transactions.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: number): Promise<Transactions> {
+    return await Transactions.findOne({ where: { id } });
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(id: number, updateTransactionDto: UpdateTransactionDto) {
+    const [_, affectedRows] = await Transactions.update(updateTransactionDto, {
+      where: { id },
+      returning: true,
+    });
+    return affectedRows[0].get({ plain: true });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  async remove(id: number): Promise<number> {
+    return await Transactions.destroy({ where: { id } });
   }
 }
