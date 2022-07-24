@@ -9,8 +9,11 @@ export class TransactionService {
   async create(
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transactions> {
+    const points =
+      createTransactionDto.amount - 50 + (createTransactionDto.amount - 100);
     const createdTransaction = await Transactions.create({
       ...createTransactionDto,
+      points,
     });
     const _transaction = await createdTransaction.get({ plain: true });
     return _transaction;
