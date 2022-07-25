@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { Users, Transactions } from 'src/common/models';
+import { Users, Transactions } from '../common/models';
 import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
@@ -15,11 +15,11 @@ export class UserService {
     return await Users.findAll({});
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: string): Promise<User> {
     return await Users.findOne({ where: { id } });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const [_, affectedRows] = await Users.update(updateUserDto, {
       where: { id },
       returning: true,
@@ -27,7 +27,7 @@ export class UserService {
     return affectedRows[0].get({ plain: true });
   }
 
-  async remove(id: number): Promise<number> {
+  async remove(id: string): Promise<number> {
     return await Users.destroy({ where: { id } });
   }
 

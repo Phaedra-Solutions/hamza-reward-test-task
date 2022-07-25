@@ -33,7 +33,7 @@ export class TransactionController {
   @Get(':id')
   @ApiResponse({ status: 200, type: Transaction })
   async findOne(@Param('id') id: string): Promise<Transaction> {
-    return await this.transactionService.findOne(+id);
+    return await this.transactionService.findOne(id);
   }
 
   @Patch(':id')
@@ -41,11 +41,11 @@ export class TransactionController {
     @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ): Promise<Transaction> {
-    return await this.transactionService.update(+id, updateTransactionDto);
+    return await this.transactionService.update(id, updateTransactionDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<number> {
-    return await this.transactionService.remove(+id);
+    return await this.transactionService.remove(id);
   }
 }

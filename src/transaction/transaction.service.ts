@@ -23,19 +23,28 @@ export class TransactionService {
     return await Transactions.findAll();
   }
 
-  async findOne(id: number): Promise<Transactions> {
+  async findOne(id: string): Promise<Transactions> {
     return await Transactions.findOne({ where: { id } });
   }
 
-  async update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    const [_, affectedRows] = await Transactions.update(updateTransactionDto, {
-      where: { id },
-      returning: true,
-    });
+  async update(id: string, updateTransactionDto: UpdateTransactionDto) {
+    const points = updateTransactionDto.amount
+      ? updateTransactionDto.amount - 50 + (updateTransactionDto.amount - 100)
+      : 0;
+    const [_, affectedRows] = await Transactions.update(
+      {
+        ...updateTransactionDto,
+        ...(updateTransactionDto.amount ? { points } : {}),
+      },
+      {
+        where: { id },
+        returning: true,
+      },
+    );
     return affectedRows[0].get({ plain: true });
   }
 
-  async remove(id: number): Promise<number> {
+  async remove(id: string): Promise<number> {
     return await Transactions.destroy({ where: { id } });
   }
 }
