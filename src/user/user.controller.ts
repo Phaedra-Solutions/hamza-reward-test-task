@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +21,28 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.userService.create(createUserDto);
+  }
+
+  @Get('/stats-monthly')
+  @ApiQuery({
+    name: 'id',
+    type: String,
+    description: 'User ID',
+    required: false,
+  })
+  async getStatsByMonth(@Query('id') id?: string | null): Promise<any> {
+    return await this.userService.getStatsByMonth(id);
+  }
+
+  @Get('/stats')
+  @ApiQuery({
+    name: 'id',
+    type: String,
+    description: 'User ID',
+    required: false,
+  })
+  async getTotalPoints(@Query('id') id?: string | null): Promise<any> {
+    return await this.userService.getTotalPoints(id);
   }
 
   @Get()
