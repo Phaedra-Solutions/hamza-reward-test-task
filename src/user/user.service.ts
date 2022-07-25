@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { Users } from 'src/common/models';
+import { Users, Transactions } from 'src/common/models';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class UserService {
@@ -28,5 +29,56 @@ export class UserService {
 
   async remove(id: number): Promise<number> {
     return await Users.destroy({ where: { id } });
+  }
+
+  async getStatsByMonth(id: string | null): Promise<User | User[]> {
+    return await Users.findAll({
+      where: {
+        ...(id ? { id } : {}),
+      },
+      attributes: ['id', 'name'],
+      include: [
+        {
+          model: Transactions,
+          attributes: [
+            [Sequelize.fn('SUM', Sequelize.col('points')), 'points'],
+            [
+              Sequelize.fn(
+                'date_trunc',
+                'month',
+                Sequelize.col('transactions.createdAt'),
+              ),
+              'month',
+            ],
+          ],
+        },
+      ],
+      group: [
+        'Users.id',
+        'transactions.createdAt',
+        'transactions.points',
+        'transactions.id',
+      ],
+    });
+  }
+
+  async getTotalPoints(id: string | null): Promise<User[]> {
+    return await Users.findAll({
+      where: {
+        ...(id ? { id } : {}),
+      },
+      attributes: [
+        'id',
+        'name',
+        [Sequelize.fn('SUM', Sequelize.col('transactions.points')), 'points'],
+      ],
+      include: [
+        {
+          model: Transactions,
+          attributes: [],
+        },
+      ],
+      group: ['Users.id', 'transactions.id'],
+    });
   }
 }
