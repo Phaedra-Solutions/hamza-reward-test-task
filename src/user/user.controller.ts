@@ -52,7 +52,7 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
-    return await this.userService.findOne(+id);
+    return await this.userService.findOne(id);
   }
 
   @Patch(':id')
@@ -60,11 +60,11 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User | User[]> {
-    return await this.userService.update(+id, updateUserDto);
+    return await this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<number> {
-    return await this.userService.remove(+id);
+    return await this.userService.remove(id);
   }
 }
